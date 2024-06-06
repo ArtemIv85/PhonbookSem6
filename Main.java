@@ -1,6 +1,7 @@
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.SQLOutput;
+import java.util.*;
+import java.util.stream.Stream;
 
 class PhoneBook {
     private static HashMap<String, ArrayList<Integer>> phoneBook = new HashMap<>();
@@ -30,19 +31,47 @@ class PhoneBook {
 
 
     public ArrayList<Integer> find(String name) {
-// Введите свое решение ниже
+// Поиск по имени
         if (phoneBook.get(name)!=null){
             return phoneBook.get(name);
         }else{
             return new ArrayList<Integer>();
         }
     }
-    public static HashMap<String, ArrayList<Integer>> getPhoneBook() {
+    public static  void getPhoneBook() {
 // Вывод телефонной книги
-        return phoneBook;
-    }
+        Map<Integer, ArrayList<String>> SortName = new TreeMap<>(Collections.reverseOrder());// создаем упорядоченную мапу по количеству телефонов
+
+        for (HashMap.Entry<String, ArrayList<Integer>> entry : phoneBook.entrySet()) {
+            if (SortName.get(entry.getValue().size()) != null) {
+                SortName.get(entry.getValue().size()).add(entry.getKey());
+            } else {
+                // Если такого человека нет, то создаем нового и добавлем к нему номер
+                SortName.put(entry.getValue().size(), new ArrayList<>());
+                SortName.get(entry.getValue().size()).add(entry.getKey());
+            }
+                //В результате получили отсортированную Мапу в обратном порядке
+
+            }// конец сортировки по количеству номеров
+//Используя порядок TreeMap по значениям реализуем вывод всех номеров пользователя от большего к меньшему
+        for (Map.Entry<Integer,ArrayList<String>> entry : SortName.entrySet()){
+            for (int i=0;i<entry.getValue().size();i++){
+                System.out.println(entry.getValue().get(i)+" Номера:");
+                System.out.println(phoneBook.get(entry.getValue().get(i)));
+
+            }
+
+        }
+
+
+
+        }
+
+
+
+
 }
-// Не удаляйте этот класс - он нужен для 
+
 
 public class Main {
     public static void main(String[] args) {
@@ -65,11 +94,14 @@ public class Main {
         System.out.println(myPhoneBook.find(str1));
 
 // Вывод всей книги
-        System.out.println(PhoneBook.getPhoneBook());
+        System.out.println("Вывод всей книги по количеству телефонов по убыванию");
+        PhoneBook.getPhoneBook();
+        System.out.println("Конец вывода");
 
 
         // Удаление номера пользователя без удаления самого пользователя и вывод на экран
+        System.out.println("Удаление номера у пользователя Гитлер и вывод на экран справочника");
         myPhoneBook.delnumber("Гитлер",666);
-        System.out.println(PhoneBook.getPhoneBook());
+        PhoneBook.getPhoneBook();
     }
 }
